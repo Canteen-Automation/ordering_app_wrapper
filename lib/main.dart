@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'dart:ui';
 import 'dart:io';
 
@@ -135,7 +137,31 @@ class _ProjectPortalState extends State<ProjectPortal> {
         child: Stack(
           children: [
             if (_isInitialized && _controller != null)
-              WebViewWidget(controller: _controller!)
+              RefreshIndicator(
+                onRefresh: () async {
+                  await _controller?.reload();
+                },
+                child: Stack(
+                  children: [
+                    WebViewWidget(
+                      controller: _controller!,
+                      gestureRecognizers: {
+                        Factory<VerticalDragGestureRecognizer>(
+                          () => VerticalDragGestureRecognizer(),
+                        ),
+                      },
+                    ),
+                    // Invisible scrollable overlay to ensure RefreshIndicator triggers
+                    SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      child: Container(
+                        height: 0.1, // Near-zero height
+                        color: Colors.transparent,
+                      ),
+                    ),
+                  ],
+                ),
+              )
             else
               const Center(child: CircularProgressIndicator()),
 
