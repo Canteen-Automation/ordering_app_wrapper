@@ -135,18 +135,7 @@ class _ProjectPortalState extends State<ProjectPortal> {
         child: Stack(
           children: [
             if (_isInitialized && _controller != null)
-              RefreshIndicator(
-                onRefresh: () async {
-                  await _controller?.reload();
-                },
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height - MediaQuery.of(context).padding.top,
-                    child: WebViewWidget(controller: _controller!),
-                  ),
-                ),
-              )
+              WebViewWidget(controller: _controller!)
             else
               const Center(child: CircularProgressIndicator()),
 
